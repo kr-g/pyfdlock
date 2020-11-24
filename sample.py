@@ -29,18 +29,18 @@ with FileLock(fd) as fdl:
     fdl.pid(False)
     print("unlock pid", fdl)
 
-    reg = [(10,2),(20,5),(30,4)]
+    reg = [(10, 2), (20, 5), (30, 4)]
     fdl.regions(reg)
     print("lock regions", fdl)
-    
+
     try:
         # locking the last will fail
-        fdl.regions([(0,1),(27,2),(24,1)])
+        fdl.regions([(0, 1), (27, 2), (24, 1)])
         print("additional regions", fdl)
     except:
-        print("ERR: rolled back",fdl)
-    
-    fdl.regions(reg,False)
+        print("ERR: rolled back", fdl)
+
+    fdl.regions(reg, False)
     print("unlock regions", fdl)
 
     # rollback all until now locked regions
@@ -50,12 +50,12 @@ with FileLock(fd) as fdl:
     # block the whole file
     fdl.block()
     print("all blocked", fdl)
-    
+
     try:
         fdl.pid()
     except Exception as ex:
         print("ERR: pid lock not possible")
-        #traceback.print_exc()
+        # traceback.print_exc()
 
 # here all locks are released
 print("end state", fdl)
