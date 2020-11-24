@@ -34,7 +34,8 @@ with FileLock(fd) as fdl:
     print("lock regions", fdl)
 
     try:
-        # locking the last will fail
+        # locking the last region will fail
+        # all regions within this call will be released automatically
         fdl.regions([(0, 1), (27, 2), (24, 1)])
         print("additional regions", fdl)
     except:
