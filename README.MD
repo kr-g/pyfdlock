@@ -17,7 +17,7 @@ features:
 
 # how to use
 
-refer to test cases in git    
+refer to [`sample.py`](https://github.com/kr-g/pyfdlock/blob/main/sample.py)
 
 
 # Platform
