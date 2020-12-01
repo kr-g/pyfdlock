@@ -12,7 +12,8 @@ features:
   - checks overlapping regions
 - with context manager included
   - automatic unlocking
--
+- custom locking backends (currently Linux only)
+- 
 
 
 # how to use

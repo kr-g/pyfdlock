@@ -1,7 +1,7 @@
 import os
-import fcntl
-
 from collections import namedtuple
+
+from .backend import fnctlBackend
 
 
 class BadPositionException(Exception):
@@ -66,13 +66,14 @@ class _Region(object):
 
 
 class FileLock(object):
-    def __init__(self, fd):
+    def __init__(self, fd, backend=None):
         try:
             self._fd = fd.fileno()
         except Exception as ex:
             ex = ex
             self._fd = fd
         self._regions = []
+        self._backend = fnctlBackend() if backend == None else backend
 
     def __repr__(self):
         return (
@@ -91,7 +92,7 @@ class FileLock(object):
             raise NegativeLengthException()
         if not all(map(lambda x: x.noclash(pos, length), self._regions)):
             raise OverlapException()
-        fcntl.lockf(self._fd, fcntl.LOCK_EX | fcntl.LOCK_NB, length, pos, os.SEEK_SET)
+        self._backend.lockf(self._fd, pos, length)
         self._regions.append(_Region(pos, length))
 
     def _unlock(self, pos, length):
@@ -105,7 +106,7 @@ class FileLock(object):
         ln = fnd[0].ln
         if ln != length:
             raise SegmentLengthException()
-        fcntl.lockf(self._fd, fcntl.LOCK_UN, length, pos, os.SEEK_SET)
+        self._backend.unlockf(self._fd, pos, length)
         newregions = list(filter(lambda x: x.fr != pos, self._regions))
         self._regions = newregions
 
